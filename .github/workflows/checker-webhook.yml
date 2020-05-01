@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - name: Init Compilation Dependencies
+    - name: Init Building Dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -48,3 +48,14 @@ jobs:
         cd /home/runner/openwrt
         make defconfig
         make -j$[$(nproc)+1]
+    - name: Rebuild to Collect Error Log
+      if: failure()
+      run: |
+        cd /home/runner/openwrt
+        make -j1 V=s | tee build_log.log
+    - name: Upload Building Error Log
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: build_log.log
+        path: /home/runner/openwrt/build_log.log
