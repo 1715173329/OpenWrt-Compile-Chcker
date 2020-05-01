@@ -8,13 +8,14 @@ jobs:
     timeout-minutes: 3600
 
     env:
+      repo: ${{ github.event.client_payload.repo }}
       branch: ${{ github.event.client_payload.branch }}
       command: ${{ github.event.client_payload.command }}
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - name: Init build dependencies
+    - name: Init Compilation Dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -32,14 +33,14 @@ jobs:
     - name: Clone Source
       run: |
         cd /home/runner
-        git clone https://github.com/project-openwrt/openwrt --branch ${branch} --single-branch openwrt
+        git clone https://github.com/${repo} --branch ${branch} --single-branch openwrt
         sudo chown -R runner:runner openwrt
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
     - name: Run Remote Command
-      if: ${{ github.event.client_payload.command }} != ''
       run: |
+        cd /home/runner/openwrt
         ${command}
     - name: Start Build
       run: | 
