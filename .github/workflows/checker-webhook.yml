@@ -42,9 +42,8 @@ jobs:
       run: |
         cd /home/runner/openwrt
         bash -c "${command}"
-    - name: Start Build
+    - name: Start Build ${repo}@${branch}
       run: |
-        echo "::set-output name=name::Start Build ${repo}@${branch}"
         cd /home/runner/openwrt
         make defconfig
         make -j$[$(nproc)+1]
