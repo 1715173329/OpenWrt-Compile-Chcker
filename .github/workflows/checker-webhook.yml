@@ -42,7 +42,7 @@ jobs:
       run: |
         cd /home/runner/openwrt
         bash -c "${command}"
-    - name: Start Build ${{ github.event.client_payload.repo }}@$${{ github.event.client_payload.branch }}
+    - name: Start Build ${{ env.repo }}@$${{ env.branch }}
       run: |
         cd /home/runner/openwrt
         make defconfig
