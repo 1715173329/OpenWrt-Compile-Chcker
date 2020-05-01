@@ -5,7 +5,7 @@ on: repository_dispatch
 jobs:
   build:
     runs-on: ubuntu-18.04
-    timeout-minutes: 3600
+#    timeout-minutes: 3600
 
     env:
       repo: ${{ github.event.client_payload.repo }}
@@ -41,9 +41,10 @@ jobs:
     - name: Run Remote Command
       run: |
         cd /home/runner/openwrt
-        ${command}
+        bash -c "${command}"
     - name: Start Build
-      run: | 
+      run: |
+        echo "::set-output name=name::Start Build ${repo}@${branch}"
         cd /home/runner/openwrt
         make defconfig
         make -j$[$(nproc)+1]
